@@ -16,10 +16,10 @@ class Draftboard
     def initialize(league_id, season)
         @teams = []
         @doc = Nokogiri::HTML(open("http://games.espn.go.com/ffl/tools/draftrecap?leagueId=#{league_id}&seasonId=#{season}"))
-        fillTeams
+        fill_teams
     end
 
-    def fillTeams
+    def fill_teams
         @doc.css('table').each_with_index do |teams, i|
             next if i < 2
             selections = []
@@ -29,7 +29,7 @@ class Draftboard
                 if i == 0
                     details = data_row
                 else
-                    selections << playerPick(data_row)
+                    selections << player_pick(data_row)
                 end
             end
             team = Team.new(details, selections)
@@ -38,7 +38,7 @@ class Draftboard
     end
 
 
-    def playerPick(selection)
+    def player_pick(selection)
         pick = {}
         pick[:place] = selection.children[0].text
         pick[:player] = selection.children[1].text.split(',')[0]
@@ -54,7 +54,11 @@ class Draftboard
         pick
     end
 
-    private :playerPick, :setTeamDetails, :fillTeams
+    def team_owned_by(owner_name)
+        @teams.select{|team| team.owner == owner_name}[0]
+    end
+
+    private :player_pick, :fill_teams
 end
 
 @draftboard = Draftboard.new(LEAGUE_IDS[:newCity], SEASON)

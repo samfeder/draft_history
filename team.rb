@@ -2,12 +2,12 @@ class Team
     attr_reader :owner, :picks
 
     def initialize(details, picks)
-        @details = setTeamDetails(details)
+        @details = set_team_details(details)
         @owner = @details[:owner]
         @picks = picks
     end
 
-    def setTeamDetails(team_info_elements)
+    def set_team_details(team_info_elements)
         #ugly array of team name + owner name
         team_details = {}
 
@@ -35,5 +35,6 @@ class Team
                 .map { |pick| pick[:price]}.sort.reverse
         end
     end
-    private :setTeamDetails
+
+    private :set_team_details
 end

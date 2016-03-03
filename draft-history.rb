@@ -5,10 +5,10 @@ require_relative "./team.rb"
 load "./team.rb"
 
 LEAGUE_IDS = {
-    cuse: 199254,
-    newCity:  233285
+    CUSE: 199254,
+    NEW_CITY:  233285
 }
-SEASON = 2014
+SEASON = 2015
 
 class Draftboard
     attr_reader :teams
@@ -17,6 +17,10 @@ class Draftboard
         @teams = []
         @doc = Nokogiri::HTML(open("http://games.espn.go.com/ffl/tools/draftrecap?leagueId=#{league_id}&seasonId=#{season}"))
         fill_teams
+    end
+
+    def position_trend(position)
+        @teams.map{|team| team.prices_paid(position)}.flatten.sort.reverse
     end
 
     def fill_teams
@@ -36,7 +40,6 @@ class Draftboard
             @teams << team
         end
     end
-
 
     def player_pick(selection)
         pick = {}
@@ -61,4 +64,4 @@ class Draftboard
     private :player_pick, :fill_teams
 end
 
-@draftboard = Draftboard.new(LEAGUE_IDS[:newCity], SEASON)
+@draftboard = Draftboard.new(LEAGUE_IDS[:NEW_CITY], SEASON)
